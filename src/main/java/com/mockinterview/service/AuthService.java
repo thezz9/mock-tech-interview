@@ -2,6 +2,7 @@ package com.mockinterview.service;
 
 import org.springframework.stereotype.Service;
 
+import com.mockinterview.config.PasswordEncoder;
 import com.mockinterview.dto.request.SignupRequest;
 import com.mockinterview.exception.UserException;
 import com.mockinterview.exception.UserExceptionCode;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void signup(SignupRequest req) {
 
@@ -22,10 +24,12 @@ public class AuthService {
             throw new UserException(UserExceptionCode.DUPLICATE_EMAIL);
         }
 
+        String encodedPassword = passwordEncoder.encode(req.password());
+
         User user = User.createUser(
             req.email(),
             req.username(),
-            req.password(),
+            encodedPassword,
             req.field(),
             req.experience()
         );
