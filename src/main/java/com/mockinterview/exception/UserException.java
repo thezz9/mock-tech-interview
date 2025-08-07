@@ -2,6 +2,8 @@ package com.mockinterview.exception;
 
 import org.springframework.http.HttpStatus;
 
+import com.mockinterview.exception.code.UserExceptionCode;
+
 public class UserException extends BaseException {
 
     private final UserExceptionCode code;
