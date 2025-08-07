@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mockinterview.dto.request.SignupRequest;
 import com.mockinterview.service.AuthService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> createUser(@RequestBody SignupRequest req) {
+    public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequest req) {
         authService.signup(req);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
