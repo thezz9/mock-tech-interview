@@ -1,4 +1,4 @@
-package com.mockinterview.dto.response;
+package com.mockinterview.dto.response.auth;
 
 public record LoginResponse(
     String accessToken,

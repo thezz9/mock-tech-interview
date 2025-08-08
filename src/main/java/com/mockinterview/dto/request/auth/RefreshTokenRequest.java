@@ -1,4 +1,4 @@
-package com.mockinterview.dto.request;
+package com.mockinterview.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
