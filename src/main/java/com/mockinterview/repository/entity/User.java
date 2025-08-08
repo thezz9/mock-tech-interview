@@ -62,4 +62,22 @@ public class User extends BaseEntity {
         user.active = true;
         return user;
     }
+
+    public void updateUser(
+        String username,
+        TechField field,
+        ExperienceLevel experience
+    ) {
+        if (username != null) this.username = username;
+        if (field != null) this.field = field;
+        if (experience != null) this.experience = experience;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void deleteUser() {
+        active = false;
+    }
 }
