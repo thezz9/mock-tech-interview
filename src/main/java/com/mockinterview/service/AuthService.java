@@ -1,14 +1,15 @@
 package com.mockinterview.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mockinterview.config.PasswordEncoder;
 import com.mockinterview.config.jwt.JwtProvider;
-import com.mockinterview.dto.request.LoginRequest;
-import com.mockinterview.dto.request.RefreshTokenRequest;
-import com.mockinterview.dto.request.SignupRequest;
-import com.mockinterview.dto.response.LoginResponse;
-import com.mockinterview.dto.response.RefreshTokenResponse;
+import com.mockinterview.dto.request.auth.LoginRequest;
+import com.mockinterview.dto.request.auth.RefreshTokenRequest;
+import com.mockinterview.dto.request.auth.SignupRequest;
+import com.mockinterview.dto.response.auth.LoginResponse;
+import com.mockinterview.dto.response.auth.RefreshTokenResponse;
 import com.mockinterview.exception.UserException;
 import com.mockinterview.exception.code.UserExceptionCode;
 import com.mockinterview.repository.entity.User;
@@ -26,11 +27,17 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public void signup(SignupRequest req) {
 
-        if (userRepository.existsByEmail(req.email())) {
-            throw new UserException(UserExceptionCode.DUPLICATE_EMAIL);
-        }
+        userRepository.findByEmail(req.email())
+            .ifPresent(user -> {
+                if (user.getActive()) {
+                    throw new UserException(UserExceptionCode.DUPLICATE_EMAIL);
+                } else {
+                    throw new UserException(UserExceptionCode.USER_ALREADY_WITHDRAWN);
+                }
+            });
 
         String encodedPassword = passwordEncoder.encode(req.password());
 
@@ -45,10 +52,15 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Transactional
     public LoginResponse login(LoginRequest req) {
 
         User user = userRepository.findByEmail(req.email())
             .orElseThrow(() -> new UserException(UserExceptionCode.USER_NOT_FOUND));
+
+        if (!user.getActive()) {
+            throw new UserException(UserExceptionCode.USER_ALREADY_WITHDRAWN);
+        }
 
         if (!passwordEncoder.matches(req.password(), user.getPassword())) {
             throw new UserException(UserExceptionCode.INVALID_CREDENTIALS);
@@ -64,10 +76,12 @@ public class AuthService {
         return new LoginResponse(accessToken, refreshToken, "Bearer");
     }
 
+    @Transactional
     public void logout(Long userId) {
         refreshTokenRepository.deleteByUserId(userId);
     }
 
+    @Transactional(readOnly = true)
     public RefreshTokenResponse refresh(RefreshTokenRequest req) {
         String refreshToken = req.refreshToken();
 

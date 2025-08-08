@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mockinterview.dto.request.LoginRequest;
-import com.mockinterview.dto.request.RefreshTokenRequest;
-import com.mockinterview.dto.request.SignupRequest;
-import com.mockinterview.dto.response.LoginResponse;
-import com.mockinterview.dto.response.RefreshTokenResponse;
+import com.mockinterview.dto.request.auth.LoginRequest;
+import com.mockinterview.dto.request.auth.RefreshTokenRequest;
+import com.mockinterview.dto.request.auth.SignupRequest;
+import com.mockinterview.dto.response.auth.LoginResponse;
+import com.mockinterview.dto.response.auth.RefreshTokenResponse;
 import com.mockinterview.service.AuthService;
 
 import jakarta.validation.Valid;
