@@ -73,6 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             path.equals("/favicon.ico") ||
             path.startsWith("/swagger-ui/") ||
             path.startsWith("/v3/api-docs") ||
+            path.startsWith("/ws") ||
             (path.equals("/") && "GET".equals(method));
     }
 
